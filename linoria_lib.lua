@@ -17,7 +17,7 @@ ScreenGui.Parent = CoreGui;
 local BooleanToggles = {};
 local Options = {};
 
-getgenv().Toggles = BooleanToggles;
+getgenv().BooleanToggles = BooleanToggles;
 getgenv().Options = Options;
 
 local Library = {
