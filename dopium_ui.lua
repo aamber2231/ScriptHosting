@@ -1,6 +1,8 @@
 local ScreenGui = Instance.new("ScreenGui")
 
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+local CG = game:GetService('CoreGui')
+
+ScreenGui.Parent = CG
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 local RS = game:GetService('RunService')
