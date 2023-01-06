@@ -54,6 +54,14 @@ function library:CreateWindow(window_options)
     MainFrame.Position = UDim2.new(0.29349187, 0, 0.244389027, 0)
     MainFrame.Size = UDim2.new(0, 659, 0, 410)
 
+    UIS.InputBegan:Connect(function(input, gameProcessedEvent)
+        if input.UserInputType == Enum.UserInputType.Keyboard then
+            if input.KeyCode == Enum.KeyCode.RightShift then
+                MainFrame.Visible = not MainFrame.Visible
+            end
+        end
+    end)
+
     TopBar.Name = "TopBar"
     TopBar.Parent = MainFrame
     TopBar.BackgroundColor3 = Color3.fromRGB(41, 41, 52)
