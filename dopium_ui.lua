@@ -435,6 +435,7 @@ function library:CreateWindow(window_options)
                     local ComboSelector = Instance.new("TextButton")
                     local ComboItem = Instance.new("TextLabel")
                     local ComboIndicator = Instance.new("TextLabel")
+                    local ComboTitle = Instance.new("TextLabel")
                     
                     if not combo_options.items or #combo_options.items == 0 then error('empty combo created. id: ' .. combo_options.id) return end
 
@@ -461,13 +462,13 @@ function library:CreateWindow(window_options)
                     ComboSetting.BackgroundTransparency = 1.000
                     ComboSetting.BorderSizePixel = 0
                     ComboSetting.Position = UDim2.new(0, 0, 0.628834367, 0)
-                    ComboSetting.Size = UDim2.new(0, 186, 0, 53)
+                    ComboSetting.Size = UDim2.new(0, 186, 0, 74)
 
                     ComboSelector.Name = "ComboSelector"
                     ComboSelector.Parent = ComboSetting
                     ComboSelector.BackgroundColor3 = Color3.fromRGB(31, 31, 41)
                     ComboSelector.BorderColor3 = Color3.fromRGB(53, 53, 63)
-                    ComboSelector.Position = UDim2.new(0.0219999999, 0, 0.187631279, 0)
+                    ComboSelector.Position = UDim2.new(0.0166236553, 0, 0.408497334, 0)
                     ComboSelector.Size = UDim2.new(0, 182, 0, 32)
                     ComboSelector.Font = Enum.Font.SourceSans
                     ComboSelector.Text = ""
@@ -478,7 +479,7 @@ function library:CreateWindow(window_options)
                     ComboItem.Parent = ComboSetting
                     ComboItem.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                     ComboItem.BackgroundTransparency = 1.000
-                    ComboItem.Position = UDim2.new(0.0698924735, 0, 0.187631279, 0)
+                    ComboItem.Position = UDim2.new(0.0645161271, 0, 0.408497334, 0)
                     ComboItem.Size = UDim2.new(0, 150, 0, 31)
                     ComboItem.Font = Enum.Font.Arial
                     ComboItem.Text = combo_options.default or ''
@@ -492,7 +493,7 @@ function library:CreateWindow(window_options)
                     ComboIndicator.Parent = ComboSetting
                     ComboIndicator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                     ComboIndicator.BackgroundTransparency = 1.000
-                    ComboIndicator.Position = UDim2.new(0.838709652, 0, 0.187631279, 0)
+                    ComboIndicator.Position = UDim2.new(0.833333313, 0, 0.408497334, 0)
                     ComboIndicator.Rotation = 90.000
                     ComboIndicator.Size = UDim2.new(0, 30, 0, 31)
                     ComboIndicator.Font = Enum.Font.Arial
@@ -500,6 +501,20 @@ function library:CreateWindow(window_options)
                     ComboIndicator.TextColor3 = Color3.fromRGB(112, 112, 112)
                     ComboIndicator.TextSize = 12.000
                     ComboIndicator.TextWrapped = true
+
+                    ComboTitle.Name = "ComboTitle"
+                    ComboTitle.Parent = ComboSetting
+                    ComboTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    ComboTitle.BackgroundTransparency = 1.000
+                    ComboTitle.Position = UDim2.new(0.0215053745, 0, -0.0059171021, 0)
+                    ComboTitle.Size = UDim2.new(0, 150, 0, 31)
+                    ComboTitle.Font = Enum.Font.Arial
+                    ComboTitle.Text = combo_options.title
+                    ComboTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    ComboTitle.TextSize = 16.000
+                    ComboTitle.TextStrokeTransparency = 0.500
+                    ComboTitle.TextWrapped = true
+                    ComboTitle.TextXAlignment = Enum.TextXAlignment.Left
 
 					ComboSelector.MouseButton1Click:Connect(function()						
 						if combos[combo_options.id].index < #combo_options.items then
@@ -526,6 +541,11 @@ function library:CreateWindow(window_options)
                     end)
 
                     return combos[combo_options.id]
+                end
+
+                function groupbox_data:Textbox(textbox_options, callback)
+                    local TextBoxSetting = Instance.new("Frame")
+                    local TextBoxObject = Instance.new("TextBox")
                 end
 
                 return groupbox_data
