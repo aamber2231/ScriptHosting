@@ -1,3 +1,8 @@
+local ScreenGui = Instance.new("ScreenGui")
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
 local library = {};
 
 local tabs = {};
