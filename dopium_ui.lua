@@ -3,6 +3,10 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
+local RS = game:GetService('RunService')
+local UIS = game:GetService('UserInputService')
+local TS = game:GetService('TweenService')
+
 local library = {};
 
 local tabs = {};
@@ -18,6 +22,17 @@ getgenv().sliders = sliders;
 getgenv().combos = combos;
 getgenv().textboxes = textboxes;
 getgenv().groupboxes = groupboxes;
+
+local function Resize(part, new, _delay)
+	_delay = _delay or 0.5
+	local tweenInfo = TweenInfo.new(_delay, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	local tween = TS:Create(part, tweenInfo, new)
+	tween:Play()
+end
+
+local function gMouse()
+	return Vector2.new(UIS:GetMouseLocation().X + 1, UIS:GetMouseLocation().Y - 35)
+end
 
 function library:CreateWindow(window_options)
     local MainFrame = Instance.new("Frame")
@@ -224,6 +239,294 @@ function library:CreateWindow(window_options)
                 groupboxes[groupbox_options.id] = groupbox_data
                 groupboxes[groupbox_options.id].parent_id = tab_options.id
                 groupboxes[groupbox_options.id].box = SettingsBox
+
+                function groupbox_data:Checkbox(checkbox_options, callback)
+                    local CheckboxSetting = Instance.new("Frame")
+                    local Check = Instance.new("TextButton")
+                    local CheckLabel = Instance.new("TextLabel")
+
+                    CheckboxSetting.Name = "CheckboxSetting"
+                    CheckboxSetting.Parent = BoxScrollFrame
+                    CheckboxSetting.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    CheckboxSetting.BackgroundTransparency = 1.000
+                    CheckboxSetting.BorderSizePixel = 0
+                    CheckboxSetting.Size = UDim2.new(0, 186, 0, 23)
+                    
+                    Check.Name = "Check"
+                    Check.Parent = CheckboxSetting
+                    Check.BackgroundColor3 = Color3.fromRGB(31, 31, 41) -- enabled : 0, 119, 255
+                    Check.BorderColor3 = Color3.fromRGB(53, 53, 63)
+                    Check.Position = UDim2.new(0.0215053763, 0, 0.222222328, 0)
+                    Check.Size = UDim2.new(0, 15, 0, 15)
+                    Check.Font = Enum.Font.SourceSans
+                    Check.Text = ""
+                    Check.TextColor3 = Color3.fromRGB(0, 0, 0)
+                    Check.TextSize = 14.000
+                    
+                    CheckLabel.Name = "CheckLabel"
+                    CheckLabel.Parent = CheckboxSetting
+                    CheckLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    CheckLabel.BackgroundTransparency = 1.000
+                    CheckLabel.Position = UDim2.new(0.139784947, 0, 0.222222224, 0)
+                    CheckLabel.Size = UDim2.new(0, 160, 0, 15)
+                    CheckLabel.Font = Enum.Font.Arial
+                    CheckLabel.Text = checkbox_options.title
+                    CheckLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    CheckLabel.TextSize = 16.000
+                    CheckLabel.TextStrokeTransparency = 0.500
+                    CheckLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+                    local toggled = checkbox_options.default
+
+                    toggles[checkbox_options.id] = {};
+                    toggles[checkbox_options.id].value = toggled
+
+                    if toggled then
+                        Check.BackgroundColor3 = Color3.fromRGB(0, 119, 255)
+                    else
+                        Check.BackgroundColor3 = Color3.fromRGB(31, 31, 41)
+                    end
+
+                    Check.MouseButton1Click:Connect(function(x, y)
+                        toggled = not toggled
+                        toggles[checkbox_options.id].value = toggled
+                        if toggled then
+                            Check.BackgroundColor3 = Color3.fromRGB(0, 119, 255)
+                        else
+                            Check.BackgroundColor3 = Color3.fromRGB(31, 31, 41)
+                        end
+
+                        if callback then
+                            callback(toggled)
+                        end
+                    end)
+
+                    return toggles[checkbox_options.id]
+                end
+
+                function groupbox_data:Slider(slider_options, callback)
+                    local SliderSetting = Instance.new("Frame")
+                    local SliderLabel = Instance.new("TextLabel")
+                    local SliderFrame = Instance.new("Frame")
+                    local SliderBar = Instance.new('Frame')
+                    local SliderAmount = Instance.new("TextLabel")
+
+                    SliderSetting.Name = "SliderSetting"
+                    SliderSetting.Parent = BoxScrollFrame
+                    SliderSetting.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    SliderSetting.BackgroundTransparency = 1.000
+                    SliderSetting.BorderSizePixel = 0
+                    SliderSetting.Position = UDim2.new(0, 0, 0.0858895704, 0)
+                    SliderSetting.Size = UDim2.new(0, 186, 0, 36)
+
+                    SliderLabel.Name = "SliderLabel"
+                    SliderLabel.Parent = SliderSetting
+                    SliderLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    SliderLabel.BackgroundTransparency = 1.000
+                    SliderLabel.Position = UDim2.new(0.0215053763, 0, 0, 0)
+                    SliderLabel.Size = UDim2.new(0, 182, 0, 21)
+                    SliderLabel.Font = Enum.Font.Arial
+                    SliderLabel.Text = slider_options.title
+                    SliderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    SliderLabel.TextSize = 16.000
+                    SliderLabel.TextStrokeTransparency = 0.500
+                    SliderLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+                    SliderFrame.Name = "SliderFrame"
+                    SliderFrame.Parent = SliderSetting
+                    SliderFrame.BackgroundColor3 = Color3.fromRGB(31, 31, 41)
+                    SliderFrame.BorderColor3 = Color3.fromRGB(53, 53, 63)
+                    SliderFrame.Position = UDim2.new(0.0215053763, 0, 0.699999988, 0)
+                    SliderFrame.Size = UDim2.new(0, 182, 0, 7)
+
+                    SliderBar.Name = "SliderBar"
+                    SliderBar.Parent = SliderSetting
+                    SliderBar.BackgroundColor3 = Color3.fromRGB(0, 137, 211)
+                    SliderBar.BorderColor3 = Color3.fromRGB(53, 53, 63)
+                    SliderBar.BorderSizePixel = 0
+                    SliderBar.Position = UDim2.new(0.0215053763, 0, 0.699999988, 0)
+                    SliderBar.Size = UDim2.new(0, 0, 0, 7) -- max is 182
+
+                    SliderAmount.Name = "SliderAmount"
+                    SliderAmount.Parent = SliderSetting
+                    SliderAmount.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    SliderAmount.BackgroundTransparency = 1.000
+                    SliderAmount.Position = UDim2.new(0.559139788, 0, 0, 0)
+                    SliderAmount.Size = UDim2.new(0, 82, 0, 21)
+                    SliderAmount.Font = Enum.Font.Arial
+                    SliderAmount.Text = tostring(slider_options.default or 0) .. "%"
+                    SliderAmount.TextColor3 = Color3.fromRGB(163, 163, 163)
+                    SliderAmount.TextSize = 16.000
+                    SliderAmount.TextStrokeTransparency = 0.500
+                    SliderAmount.TextXAlignment = Enum.TextXAlignment.Right
+
+                    sliders[slider_options.id] = {};
+                    sliders[slider_options.id].value = slider_options.default or 0
+
+                    do -- slider stuff (put in do function cuz many codes ;)
+                        local MouseEntered = false
+
+                        SliderFrame.MouseEnter:Connect(function(x, y)
+                            MouseEntered = true
+                        end)
+
+                        SliderFrame.MouseLeave:Connect(function(x, y)
+                            MouseEntered = false
+                        end)
+
+                        local Held = false
+                        UIS.InputBegan:Connect(function(input, gameProcessedEvent)
+                            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                                Held = true
+
+                                spawn(function()
+                                    if MouseEntered then
+                                        while Held do
+                                            local mouse_location = gMouse()
+                                            local x = (SliderFrame.AbsoluteSize.X - (SliderFrame.AbsoluteSize.X - ((mouse_location.X - SliderFrame.AbsolutePosition.X)) + 1)) / SliderFrame.AbsoluteSize.X
+                                            -- ^ the fuck is this line LOL
+                                            local min = 0
+                                            local max = 1
+
+                                            local size = min
+                                            if x >= min and x <= max then
+                                                size = x
+                                            elseif x < min then
+                                                size = min
+                                            elseif x > max then
+                                                size = max
+                                            end
+
+                                            SliderBar.Size = UDim2.new(size or min, 0, 0, 7)
+
+                                            local p = math.floor((size or min) * 100)
+
+                                            local maxv = slider_options.max
+                                            local minv = slider_options.min
+                                            local diff = maxv - minv
+
+                                            local sel_value = math.floor(((diff / 100) * p) + minv)
+
+                                            sliders[slider_options.id].value = sel_value
+                                            SliderAmount.Text = tostring(sel_value) .. '%'
+                                            if callback then
+                                                callback(sel_value)
+                                            end
+
+                                            -- Resize(SliderBar, {Size = UDim2.new(size or min, 0, 0, 7)})
+
+                                            RS.Heartbeat:Wait()
+                                        end
+                                    end
+                                end)
+                            end
+                        end)
+
+                        UIS.InputEnded:Connect(function(input)
+                            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                                Held = false
+                            end
+                        end)
+                    end
+                end
+
+                function groupbox_data:Combo(combo_options, callback)
+                    local ComboSetting = Instance.new("Frame")
+                    local ComboSelector = Instance.new("TextButton")
+                    local ComboItem = Instance.new("TextLabel")
+                    local ComboIndicator = Instance.new("TextLabel")
+                    
+                    if not combo_options.items or #combo_options.items == 0 then error('empty combo created. id: ' .. combo_options.id) return end
+
+					combos[combo_options.id] = {};
+
+					local DefaultIndex = 0
+					local valid_default = false
+					for _, item in pairs(combo_options.items) do
+						if item == combo_options.default then
+							valid_default = true
+							combos[combo_options.id].index = _
+						end
+					end
+					if not valid_default then
+						error('invalid default value in combo. id: ' .. combo_options.id)
+						return
+					end
+					combos[combo_options.id].items = combo_options.items
+					combos[combo_options.id].value = combo_options.default or ''
+
+                    ComboSetting.Name = "ComboSetting"
+                    ComboSetting.Parent = BoxScrollFrame
+                    ComboSetting.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    ComboSetting.BackgroundTransparency = 1.000
+                    ComboSetting.BorderSizePixel = 0
+                    ComboSetting.Position = UDim2.new(0, 0, 0.628834367, 0)
+                    ComboSetting.Size = UDim2.new(0, 186, 0, 53)
+
+                    ComboSelector.Name = "ComboSelector"
+                    ComboSelector.Parent = ComboSetting
+                    ComboSelector.BackgroundColor3 = Color3.fromRGB(31, 31, 41)
+                    ComboSelector.BorderColor3 = Color3.fromRGB(53, 53, 63)
+                    ComboSelector.Position = UDim2.new(0.0219999999, 0, 0.187631279, 0)
+                    ComboSelector.Size = UDim2.new(0, 182, 0, 32)
+                    ComboSelector.Font = Enum.Font.SourceSans
+                    ComboSelector.Text = ""
+                    ComboSelector.TextColor3 = Color3.fromRGB(0, 0, 0)
+                    ComboSelector.TextSize = 14.000
+
+                    ComboItem.Name = "ComboItem"
+                    ComboItem.Parent = ComboSetting
+                    ComboItem.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    ComboItem.BackgroundTransparency = 1.000
+                    ComboItem.Position = UDim2.new(0.0698924735, 0, 0.187631279, 0)
+                    ComboItem.Size = UDim2.new(0, 150, 0, 31)
+                    ComboItem.Font = Enum.Font.Arial
+                    ComboItem.Text = combo_options.default or ''
+                    ComboItem.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    ComboItem.TextSize = 16.000
+                    ComboItem.TextStrokeTransparency = 0.500
+                    ComboItem.TextWrapped = true
+                    ComboItem.TextXAlignment = Enum.TextXAlignment.Left
+
+                    ComboIndicator.Name = "ComboIndicator"
+                    ComboIndicator.Parent = ComboSetting
+                    ComboIndicator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    ComboIndicator.BackgroundTransparency = 1.000
+                    ComboIndicator.Position = UDim2.new(0.838709652, 0, 0.187631279, 0)
+                    ComboIndicator.Rotation = 90.000
+                    ComboIndicator.Size = UDim2.new(0, 30, 0, 31)
+                    ComboIndicator.Font = Enum.Font.Arial
+                    ComboIndicator.Text = "| | |"
+                    ComboIndicator.TextColor3 = Color3.fromRGB(112, 112, 112)
+                    ComboIndicator.TextSize = 12.000
+                    ComboIndicator.TextWrapped = true
+
+					ComboSelector.MouseButton1Click:Connect(function()						
+						if combos[combo_options.id].index < #combo_options.items then
+							combos[combo_options.id].index += 1
+                            combos[combo_options.id].value = combo_options.items[combos[combo_options.id].index]
+							ComboItem.Text = combo_options.items[combos[combo_options.id].index]
+							-- print('added: ' .. combos[combo_options.id].index .. ' value: ' .. combos[combo_options.id].value)
+                            if callback then
+                                callback(combos[combo_options.id].value)
+                            end
+						end
+					end)
+
+                    ComboSelector.MouseButton2Click:Connect(function()
+                        if combos[combo_options.id].index > 1 then
+							combos[combo_options.id].index -= 1
+                            combos[combo_options.id].value = combo_options.items[combos[combo_options.id].index]
+							ComboItem.Text = combo_options.items[combos[combo_options.id].index]
+							-- print('removed: ' .. combos[combo_options.id].index .. ' value: ' .. combos[combo_options.id].value)
+                            if callback then
+                                callback(combos[combo_options.id].value)
+                            end
+						end
+                    end)
+
+                    return combos[combo_options.id]
+                end
 
                 return groupbox_data
             end
