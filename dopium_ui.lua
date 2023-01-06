@@ -546,6 +546,73 @@ function library:CreateWindow(window_options)
                 function groupbox_data:Textbox(textbox_options, callback)
                     local TextBoxSetting = Instance.new("Frame")
                     local TextBoxObject = Instance.new("TextBox")
+
+                    textboxes[textbox_options.id] = {};
+                    textboxes[textbox_options.id].value = textbox_options.default or ''
+                    
+                    TextBoxSetting.Name = "TextBoxSetting"
+                    TextBoxSetting.Parent = BoxScrollFrame
+                    TextBoxSetting.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    TextBoxSetting.BackgroundTransparency = 1.000
+                    TextBoxSetting.BorderSizePixel = 0
+                    TextBoxSetting.Position = UDim2.new(0, 0, 0.687116563, 0)
+                    TextBoxSetting.Size = UDim2.new(0, 194, 0, 41)
+
+                    TextBoxObject.Name = "TextBoxObject"
+                    TextBoxObject.Parent = TextBoxSetting
+                    TextBoxObject.BackgroundColor3 = Color3.fromRGB(31, 31, 41)
+                    TextBoxObject.BorderColor3 = Color3.fromRGB(53, 53, 63)
+                    TextBoxObject.Position = UDim2.new(0.0206185561, 0, 0.0904392153, 0)
+                    TextBoxObject.Size = UDim2.new(0, 182, 0, 32)
+                    TextBoxObject.Font = Enum.Font.Arial
+                    TextBoxObject.PlaceholderText = textbox_options.title
+                    TextBoxObject.Text = textbox_options.default or ''
+                    TextBoxObject.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    TextBoxObject.TextSize = 16.000
+                    TextBoxObject.TextStrokeTransparency = 0.500
+                    TextBoxObject.TextWrapped = true
+                    TextBoxObject.ClearTextOnFocus = textbox_options.clear
+
+                    TextBoxObject.FocusLost:Connect(function(enterPressed, inputThatCausedFocusLoss)
+                        if textbox_options.on_enter then
+                            if enterPressed then
+                                callback(TextBoxObject.Text)
+                            end
+                        else callback(TextBoxObject.Text) end
+
+                        textboxes[textbox_options.id].value = TextBoxObject.Text
+                    end)
+
+                    return textboxes[textbox_options.id]
+                end
+
+                function groupbox_data:Button(title, callback)
+                    local ButtonSetting = Instance.new("Frame")
+                    local ButtonObject = Instance.new("TextButton")
+
+                    ButtonSetting.Name = "ButtonSetting"
+                    ButtonSetting.Parent = BoxScrollFrame
+                    ButtonSetting.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    ButtonSetting.BackgroundTransparency = 1.000
+                    ButtonSetting.BorderSizePixel = 0
+                    ButtonSetting.Position = UDim2.new(0, 0, 0.687116563, 0)
+                    ButtonSetting.Size = UDim2.new(0, 194, 0, 41)
+                    
+                    ButtonObject.Name = "ButtonObject"
+                    ButtonObject.Parent = ButtonSetting
+                    ButtonObject.BackgroundColor3 = Color3.fromRGB(31, 31, 41)
+                    ButtonObject.BorderColor3 = Color3.fromRGB(53, 53, 63)
+                    ButtonObject.Position = UDim2.new(0.0209999997, 0, 0.0900000036, 0)
+                    ButtonObject.Size = UDim2.new(0, 182, 0, 32)
+                    ButtonObject.Font = Enum.Font.Arial
+                    ButtonObject.Text = title
+                    ButtonObject.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    ButtonObject.TextSize = 16.000
+                    ButtonObject.TextStrokeTransparency = 0.500
+
+                    ButtonObject.MouseButton1Click:Connect(function()
+                        callback()
+                    end)
                 end
 
                 return groupbox_data
