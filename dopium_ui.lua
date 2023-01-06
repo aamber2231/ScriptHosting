@@ -584,13 +584,15 @@ function library:CreateWindow(window_options)
                     TextBoxObject.ClearTextOnFocus = textbox_options.clear
 
                     TextBoxObject.FocusLost:Connect(function(enterPressed, inputThatCausedFocusLoss)
-                        if textbox_options.on_enter then
-                            if enterPressed then
-                                callback(TextBoxObject.Text)
-                            end
-                        else callback(TextBoxObject.Text) end
-
-                        textboxes[textbox_options.id].value = TextBoxObject.Text
+                        if TextBoxObject.Text ~= nil then
+                            if textbox_options.on_enter then
+                                if enterPressed then
+                                    callback(TextBoxObject.Text)
+                                end
+                            else callback(TextBoxObject.Text) end
+    
+                            textboxes[textbox_options.id].value = TextBoxObject.Text
+                        end
                     end)
 
                     return textboxes[textbox_options.id]
