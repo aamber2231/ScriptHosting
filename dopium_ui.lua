@@ -69,6 +69,44 @@ function library:CreateWindow(window_options)
     TopBar.Position = UDim2.new(0, 0, -0.00182470924, 0)
     TopBar.Size = UDim2.new(0, 659, 0, 28)
 
+    spawn(function() -- window dragging
+        local dragging
+        local dragInput
+        local dragStart
+        local startPos
+
+        local function update(input)
+        	local delta = input.Position - dragStart
+        	MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+
+        TopBar.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        		dragging = true
+        		dragStart = input.Position
+        		startPos = MainFrame.Position
+        		
+        		input.Changed:Connect(function()
+        			if input.UserInputState == Enum.UserInputState.End then
+        				dragging = false
+        			end
+        		end)
+        	end
+        end)
+
+        TopBar.InputChanged:Connect(function(input)
+        	if input.UserInputType == Enum.UserInputType.MouseMovement then
+        		dragInput = input
+        	end
+        end)
+
+        UIS.InputChanged:Connect(function(input)
+            if input == dragInput and dragging then
+        		update(input)
+        	end
+        end)
+    end)
+
     HackTitle.Name = "HackTitle"
     HackTitle.Parent = TopBar
     HackTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
