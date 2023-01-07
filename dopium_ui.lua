@@ -704,16 +704,16 @@ function library:CreateWindow(window_options)
             return tab_data
         end
 
-        function window_data:Disconnect()
-            for _, conn in pairs(connections) do
-                conn:Disconnect()
-            end
-
-            MainFrame:Destroy()
-        end
-
         return window_data
     end
+end
+
+function library:Disconnect()
+    for _, conn in pairs(connections) do
+        conn:Disconnect()
+    end
+
+    ScreenGui:Destroy()
 end
 
 return library;
