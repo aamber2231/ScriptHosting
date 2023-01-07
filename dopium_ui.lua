@@ -18,6 +18,8 @@ local combos = {};
 local textboxes = {};
 local groupboxes = {};
 
+local connections = {};
+
 getgenv().tabs = tabs;
 getgenv().toggles = toggles;
 getgenv().sliders = sliders;
@@ -34,6 +36,10 @@ end
 
 local function gMouse()
 	return Vector2.new(UIS:GetMouseLocation().X + 1, UIS:GetMouseLocation().Y - 35)
+end
+
+local function conn(net)
+    table.insert(connections, net)
 end
 
 function library:CreateWindow(window_options)
@@ -54,13 +60,15 @@ function library:CreateWindow(window_options)
     MainFrame.Position = UDim2.new(0.29349187, 0, 0.244389027, 0)
     MainFrame.Size = UDim2.new(0, 659, 0, 410)
 
-    UIS.InputBegan:Connect(function(input, gameProcessedEvent)
+    local conn5 = UIS.InputBegan:Connect(function(input, gameProcessedEvent)
         if input.UserInputType == Enum.UserInputType.Keyboard then
             if input.KeyCode == Enum.KeyCode.RightShift then
                 MainFrame.Visible = not MainFrame.Visible
             end
         end
     end)
+
+    conn(conn5)
 
     TopBar.Name = "TopBar"
     TopBar.Parent = MainFrame
@@ -80,31 +88,37 @@ function library:CreateWindow(window_options)
         	MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
         end
 
-        TopBar.InputBegan:Connect(function(input)
+        local conn1 = TopBar.InputBegan:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 then
         		dragging = true
         		dragStart = input.Position
         		startPos = MainFrame.Position
         		
-        		input.Changed:Connect(function()
+        		local min_conn = input.Changed:Connect(function()
         			if input.UserInputState == Enum.UserInputState.End then
         				dragging = false
         			end
         		end)
+
+                conn(min_conn)
         	end
         end)
 
-        TopBar.InputChanged:Connect(function(input)
+        local conn2 = TopBar.InputChanged:Connect(function(input)
         	if input.UserInputType == Enum.UserInputType.MouseMovement then
         		dragInput = input
         	end
         end)
 
-        UIS.InputChanged:Connect(function(input)
+        local conn3 = UIS.InputChanged:Connect(function(input)
             if input == dragInput and dragging then
         		update(input)
         	end
         end)
+
+        conn(conn1)
+        conn(conn2)
+        conn(conn3)
     end)
 
     HackTitle.Name = "HackTitle"
@@ -199,7 +213,7 @@ function library:CreateWindow(window_options)
             TabLineGradient.Rotation = 180
             TabLineGradient.Parent = TabLine
 
-            TabItem.MouseButton1Click:Connect(function()
+            local conn63 = TabItem.MouseButton1Click:Connect(function()
                 for _, tab in pairs(tabs) do
                     if _ ~= tab_options.id then
                         tab.toggled = false
@@ -216,6 +230,8 @@ function library:CreateWindow(window_options)
                 tabs[tab_options.id].toggled = not tabs[tab_options.id].toggled
                 TabLine.Visible = tabs[tab_options.id].toggled
             end)
+
+            conn(conn63)
 
             tabs[tab_options.id] = tab_data
             tabs[tab_options.id].line = TabLine
@@ -335,7 +351,7 @@ function library:CreateWindow(window_options)
                         Check.BackgroundColor3 = Color3.fromRGB(31, 31, 41)
                     end
 
-                    Check.MouseButton1Click:Connect(function(x, y)
+                    local conn56 = Check.MouseButton1Click:Connect(function(x, y)
                         toggled = not toggled
                         toggles[checkbox_options.id].value = toggled
                         if toggled then
@@ -348,6 +364,8 @@ function library:CreateWindow(window_options)
                             callback(toggled)
                         end
                     end)
+
+                    conn(conn56)
 
                     return toggles[checkbox_options.id]
                 end
@@ -414,16 +432,20 @@ function library:CreateWindow(window_options)
                     do -- slider stuff (put in do function cuz many codes ;)
                         local MouseEntered = false
 
-                        SliderFrame.MouseEnter:Connect(function(x, y)
+                        local conn45 = SliderFrame.MouseEnter:Connect(function(x, y)
                             MouseEntered = true
                         end)
 
-                        SliderFrame.MouseLeave:Connect(function(x, y)
+                        conn(conn45)
+
+                        local conn69 = SliderFrame.MouseLeave:Connect(function(x, y)
                             MouseEntered = false
                         end)
 
+                        conn(conn69)
+
                         local Held = false
-                        UIS.InputBegan:Connect(function(input, gameProcessedEvent)
+                        local conn88 = UIS.InputBegan:Connect(function(input, gameProcessedEvent)
                             if input.UserInputType == Enum.UserInputType.MouseButton1 then
                                 Held = true
 
@@ -470,11 +492,15 @@ function library:CreateWindow(window_options)
                             end
                         end)
 
-                        UIS.InputEnded:Connect(function(input)
+                        conn(conn88)
+
+                        local conn120 = UIS.InputEnded:Connect(function(input)
                             if input.UserInputType == Enum.UserInputType.MouseButton1 then
                                 Held = false
                             end
                         end)
+
+                        conn(conn120)
                     end
                 end
 
@@ -564,7 +590,7 @@ function library:CreateWindow(window_options)
                     ComboTitle.TextWrapped = true
                     ComboTitle.TextXAlignment = Enum.TextXAlignment.Left
 
-					ComboSelector.MouseButton1Click:Connect(function()						
+					local conn140 = ComboSelector.MouseButton1Click:Connect(function()						
 						if combos[combo_options.id].index < #combo_options.items then
 							combos[combo_options.id].index += 1
                             combos[combo_options.id].value = combo_options.items[combos[combo_options.id].index]
@@ -576,7 +602,9 @@ function library:CreateWindow(window_options)
 						end
 					end)
 
-                    ComboSelector.MouseButton2Click:Connect(function()
+                    conn(conn140)
+
+                    local conn160 = ComboSelector.MouseButton2Click:Connect(function()
                         if combos[combo_options.id].index > 1 then
 							combos[combo_options.id].index -= 1
                             combos[combo_options.id].value = combo_options.items[combos[combo_options.id].index]
@@ -587,6 +615,8 @@ function library:CreateWindow(window_options)
                             end
 						end
                     end)
+
+                    conn(conn160)
 
                     return combos[combo_options.id]
                 end
@@ -621,8 +651,8 @@ function library:CreateWindow(window_options)
                     TextBoxObject.TextWrapped = true
                     TextBoxObject.ClearTextOnFocus = textbox_options.clear
 
-                    TextBoxObject.FocusLost:Connect(function(enterPressed, inputThatCausedFocusLoss)
-                        if TextBoxObject.Text ~= nil then
+                    local conn180 = TextBoxObject.FocusLost:Connect(function(enterPressed, inputThatCausedFocusLoss)
+                        if callback then
                             if textbox_options.on_enter then
                                 if enterPressed then
                                     callback(TextBoxObject.Text)
@@ -632,6 +662,8 @@ function library:CreateWindow(window_options)
                             textboxes[textbox_options.id].value = TextBoxObject.Text
                         end
                     end)
+
+                    conn(conn180)
 
                     return textboxes[textbox_options.id]
                 end
@@ -660,15 +692,24 @@ function library:CreateWindow(window_options)
                     ButtonObject.TextSize = 16.000
                     ButtonObject.TextStrokeTransparency = 0.500
 
-                    ButtonObject.MouseButton1Click:Connect(function()
+                    local conn200 = ButtonObject.MouseButton1Click:Connect(function()
                         callback()
                     end)
+                    conn(conn200)
                 end
 
                 return groupbox_data
             end
 
             return tab_data
+        end
+
+        function window_data:Disconnect()
+            for _, conn in pairs(connections) do
+                conn:Disconnect()
+            end
+
+            MainFrame:Destroy()
         end
 
         return window_data
